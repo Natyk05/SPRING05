@@ -18,7 +18,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Cada prueba corre en una transacción que se revierte al final, así que
  * los datos de import.sql quedan intactos entre pruebas.
  */
-@SpringBootTest
+@SpringBootTest(properties = {
+    "spring.jpa.properties.hibernate.hbm2ddl.import_files=reto-data.sql"
+})
 @Transactional
 class ClienteRestControllerRetoTest {
 
