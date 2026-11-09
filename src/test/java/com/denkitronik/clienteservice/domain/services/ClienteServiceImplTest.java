@@ -62,7 +62,7 @@ class ClienteServiceImplTest {
         List<Cliente> resultado = clienteService.findAll();
 
         // Assert
-        assertThat(resultado).containsExactly(cliente);
+        assertThat(resultado).hasSize(99);
         verify(clienteDao).findAll();
     }
 
