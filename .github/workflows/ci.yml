@@ -1,0 +1,35 @@
+name: CI de cliente-service
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  test-and-publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v7
+
+      - name: Configurar Java 21
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Ejecutar las pruebas
+        run: mvn -B clean verify
+
+      - name: Construir y publicar la imagen
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          image="ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/cliente-service:${GITHUB_SHA}"
+          docker build -t "$image" .
+          printf '%s' "$GHCR_TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
+          docker push "$image"
